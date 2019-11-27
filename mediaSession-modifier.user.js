@@ -60,6 +60,30 @@ const data = (function(w) {
                 previoustrack: function() { document.querySelector(".control-button[class*=spoticon-skip-back]").click(); },
                 nexttrack: function() { document.querySelector(".control-button[class*=spoticon-skip-forward]").click(); },
             }
+        },
+        "soundcloud.com": {
+            song: {
+                get title() {
+                    let e = document.querySelector(".playbackSoundBadge__titleLink");
+                    return e? e.getAttribute("title") : null;
+                },
+                get artist() {
+                    return null;
+                },
+                get album() {
+                    let e = document.querySelector(".playbackSoundBadge__lightLink");
+                    return e? e.getAttribute("title") : null;
+                },
+                get artwork() {
+                    let e = document.querySelector(".playControls__soundBadge [style*=background-image]");
+                    return e? e.getAttribute("style").match(/http.*(?=\")/)[0].replace(/-t\d+x\d+\./, "-original.") : null;
+                }
+            },
+            action: {
+                play: function() { document.querySelector("button.playControls__play").click(); },
+                previoustrack: function() { document.querySelector("button.playControls__prev").click(); },
+                nexttrack: function() { document.querySelector("button.playControls__next").click(); },
+            }
         }
         //
         // data end
