@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.27.01
+// @version     2019.11.27.02
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
