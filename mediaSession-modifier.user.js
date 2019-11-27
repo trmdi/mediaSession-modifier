@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.27.02
+// @version     2019.11.27.03
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -93,6 +93,10 @@ const data = (function(w) {
 })(window.location.hostname);
 
 if (!data) return;
+if (typeof MediaMetadata === "undefined") {
+    alert("Please enable \"Enhanced Media Controls\" in the Plasma Integration extension's Preferences to allow the script to work.");
+    return;
+}
 
 const mediaMetadata = new MediaMetadata();
 mediaMetadata.artwork = [{src: null}];
