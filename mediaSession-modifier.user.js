@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.29.01
+// @version     2019.11.29.02
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -68,11 +68,11 @@ const data = (function(w) {
                     return e? e.getAttribute("title") : null;
                 },
                 get artist() {
-                    return null;
-                },
-                get album() {
                     let e = document.querySelector(".playbackSoundBadge__lightLink");
                     return e? e.getAttribute("title") : null;
+                },
+                get album() {
+                    return "SoundCloud";
                 },
                 get artwork() {
                     let e = document.querySelector(".playControls__soundBadge [style*=background-image]");
