@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.29.02
+// @version     2019.11.29.03
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -107,20 +107,19 @@ const data = (function(w) {
 
 if (!data) return;
 
-if (typeof MediaMetadata === "undefined") {
+if (window.MediaMetadata === undefined) {
     alert("Please enable \"Enhanced Media Controls\" in the Plasma Integration extension's Preferences to allow the script to work.");
     return;
 }
 
-const mediaMetadata = new MediaMetadata();
-mediaMetadata.artwork = [{src: null}];
+const mediaMetadata = { title: null, artist: null, album: null, artwork: [{src: null}] };
 
 const updateMediaSession = function() {
-    navigator.mediaSession.metadata = mediaMetadata;
+    navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata);
     Object.keys(data.action).forEach(function(i) {
         navigator.mediaSession.setActionHandler(i, data.action[i]);
     });
-    console.log("mediaSession is updated");
+    //console.log("mediaSession is updated", mediaMetadata);
 }
 
 const callback = function(mutationsList, observer) {
