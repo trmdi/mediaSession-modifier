@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.27.03
+// @version     2019.11.29.01
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -83,6 +83,19 @@ const data = (function(w) {
                 play: function() { document.querySelector("button.playControls__play").click(); },
                 previoustrack: function() { document.querySelector("button.playControls__prev").click(); },
                 nexttrack: function() { document.querySelector("button.playControls__next").click(); },
+            },
+            updateAgain: function(mutationsList) {
+                // otherwise, it won't work properly for the first song played
+
+                if (this.ignoreMe) {
+                    return;
+                };
+                mutationsList.forEach(function(mutation) {
+                    if (mutation.target === document.querySelector(".playbackTimeline__timePassed")) {
+                        this.ignoreMe = true;
+                        updateMediaSession();
+                    }
+                }, this);
             }
         }
         //
@@ -93,6 +106,7 @@ const data = (function(w) {
 })(window.location.hostname);
 
 if (!data) return;
+
 if (typeof MediaMetadata === "undefined") {
     alert("Please enable \"Enhanced Media Controls\" in the Plasma Integration extension's Preferences to allow the script to work.");
     return;
@@ -101,7 +115,15 @@ if (typeof MediaMetadata === "undefined") {
 const mediaMetadata = new MediaMetadata();
 mediaMetadata.artwork = [{src: null}];
 
-const callback = function() {
+const updateMediaSession = function() {
+    navigator.mediaSession.metadata = mediaMetadata;
+    Object.keys(data.action).forEach(function(i) {
+        navigator.mediaSession.setActionHandler(i, data.action[i]);
+    });
+    console.log("mediaSession is updated");
+}
+
+const callback = function(mutationsList, observer) {
     if (mediaMetadata.title !== data.song.title || mediaMetadata.artist !== data.song.artist
         || mediaMetadata.album !== data.song.album || mediaMetadata.artwork[0].src !== data.song.artwork) {
 
@@ -109,12 +131,12 @@ const callback = function() {
         mediaMetadata.artist = data.song.artist;
         mediaMetadata.album = data.song.album;
         mediaMetadata.artwork = [{src: data.song.artwork}];
-        //console.log("Playing: ", mediaMetadata);
 
-        navigator.mediaSession.metadata = mediaMetadata;
-        Object.keys(data.action).forEach(function(i) {
-            navigator.mediaSession.setActionHandler(i, data.action[i]);
-        });
+        updateMediaSession();
+    }
+
+    if (typeof data.updateAgain === "function") {
+        data.updateAgain(mutationsList);
     }
 }
 const songObserver = new MutationObserver(callback);
