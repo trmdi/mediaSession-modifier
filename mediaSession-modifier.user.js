@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.12.25.01
+// @version     2019.12.25.02
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -16,7 +16,7 @@ const data = (function(w) {
         "zingmp3.vn": {
             song: {
                 get title() {
-                    let e = document.querySelector(".z-player-info-detail .z-song-name");
+                    let e = document.querySelector(".z-player-info-detail .z-song-name a");
                     return e? e.innerText : null;
                 },
                 get artist() {
