@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2019.11.29.03
+// @version     2019.12.25.01
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -35,6 +35,11 @@ const data = (function(w) {
                 play: function() { document.querySelector(".z-btn-play").click(); },
                 previoustrack: function() { document.querySelector(".z-btn-previous").click(); },
                 nexttrack: function() { document.querySelector(".z-btn-next").click(); },
+                pause: function() {
+                    if (!document.querySelector("audio").paused) {
+                        document.querySelector(".z-btn-play").click();
+                    }
+                },
             }
         },
         "open.spotify.com": {
