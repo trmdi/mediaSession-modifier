@@ -91,18 +91,44 @@ const data = (function(w) {
             },
             updateAgain: function(mutationsList) {
                 // otherwise, it won't work properly for the first song played
-
-                if (this.ignoreMe) {
-                    return;
-                };
                 mutationsList.forEach(function(mutation) {
-                    if (mutation.target === document.querySelector(".playbackTimeline__timePassed")) {
-                        this.ignoreMe = true;
+                    if (this.updateAgainEnabled && mutation.target === document.querySelector(".playbackTimeline__timePassed")) {
+                        this.updateAgainEnabled = false;
+                        console.log("update again...");
                         updateMediaSession();
                     }
                 }, this);
             }
-        }
+        },
+        "www.youtube.com": {
+            song: {
+                get title() {
+                    return navigator.mediaSession.metadata? navigator.mediaSession.metadata.title : null;
+                },
+                get artist() {
+                    return navigator.mediaSession.metadata? navigator.mediaSession.metadata.artist : null;
+                },
+                get album() {
+                    return navigator.mediaSession.metadata? "YouTube" : null;
+                },
+                get artwork() {
+                    return navigator.mediaSession.metadata? navigator.mediaSession.metadata.artwork[0].src.replace(/\/([^\/]*?default)(\.jpg)/, "/maxresdefault$2") : null;
+                }
+            },
+            action: {
+                play: function() { document.querySelector(".ytp-play-button").click(); },
+                previoustrack: function() { history.go(-1); },
+                nexttrack: function() { document.querySelector(".ytp-next-button").click(); },
+            },
+            updateAgain: function(mutationsList) {
+                mutationsList.forEach(function(mutation) {
+                    if (this.updateAgainEnabled && mutation.target === document.querySelector(".ytp-time-current")) {
+                        this.updateAgainEnabled = false;
+                        updateMediaSession();
+                    }
+                }, this);
+            }
+        },
         //
         // data end
         //
@@ -124,24 +150,26 @@ const updateMediaSession = function() {
     Object.keys(data.action).forEach(function(i) {
         navigator.mediaSession.setActionHandler(i, data.action[i]);
     });
-    //console.log("mediaSession is updated", mediaMetadata);
+    console.log("mediaSession is updated", mediaMetadata);
 }
 
 const callback = function(mutationsList, observer) {
-    if (mediaMetadata.title !== data.song.title || mediaMetadata.artist !== data.song.artist
-        || mediaMetadata.album !== data.song.album || mediaMetadata.artwork[0].src !== data.song.artwork) {
+    if (mediaMetadata.title === data.song.title && mediaMetadata.artist === data.song.artist
+        && mediaMetadata.album === data.song.album && mediaMetadata.artwork[0].src === data.song.artwork) {
 
-        mediaMetadata.title = data.song.title;
-        mediaMetadata.artist = data.song.artist;
-        mediaMetadata.album = data.song.album;
-        mediaMetadata.artwork = [{src: data.song.artwork}];
-
-        updateMediaSession();
+        if (typeof data.updateAgain === "function" && data.updateAgainEnabled) {
+            data.updateAgain(mutationsList);
+        }
+        return;
     }
 
-    if (typeof data.updateAgain === "function") {
-        data.updateAgain(mutationsList);
-    }
+    mediaMetadata.title = data.song.title;
+    mediaMetadata.artist = data.song.artist;
+    mediaMetadata.album = data.song.album;
+    mediaMetadata.artwork = [{src: data.song.artwork}];
+
+    updateMediaSession();
+    data.updateAgainEnabled = true;
 }
 const songObserver = new MutationObserver(callback);
 songObserver.observe(document.body, { childList: true, subtree: true });
