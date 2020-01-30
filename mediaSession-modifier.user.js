@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2020.01.31.01
+// @version     2020.01.31.02
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -117,7 +117,7 @@ const data = (function(w) {
             },
             action: {
                 play: function() { document.querySelector(".ytp-play-button").click(); },
-                previoustrack: function() { history.go(-1); },
+                previoustrack: function() { let b = document.querySelector(".ytp-prev-button"); b? b.click() : history.go(-1); },
                 nexttrack: function() { document.querySelector(".ytp-next-button").click(); },
             },
             updateAgain: function(mutationsList) {
