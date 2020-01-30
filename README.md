@@ -14,3 +14,4 @@ It helps supported websites to display the song's coverArt, title, artist, album
 - mp3zing.vn
 - open.spotify.com
 - soundcloud.com
+- youtube.com
