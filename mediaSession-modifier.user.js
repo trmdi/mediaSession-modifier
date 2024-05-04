@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        mediaSession-modifier
-// @version     2020.01.31.02
+// @version     2024.05.04.01
 // @author      trmdi
 // @namespace   trmdi
 // @include      *
@@ -16,28 +16,28 @@ const data = (function(w) {
         "zingmp3.vn": {
             song: {
                 get title() {
-                    let e = document.querySelector(".z-player-info-detail .z-song-name a");
+                    let e = document.querySelector(".player-controls .song-title-item a");
                     return e? e.innerText : null;
                 },
                 get artist() {
-                    let e = document.querySelector(".z-player-info-detail .z-artists");
+                    let e = document.querySelector(".player-controls .media-content .subtitle");
                     return e? e.innerText.replace(/[ -]*/,"") : null;
                 },
                 get album() {
                     return "ZingMP3";
                 },
                 get artwork() {
-                    let e = document.querySelector(".z-player-info-detail .thumb-40 img");
+                    let e = document.querySelector(".player-controls .thumbnail img");
                     return e? e.src.replace(/w\d+/,"w1366") : null;
                 }
             },
             action: {
-                play: function() { document.querySelector(".z-btn-play").click(); },
-                previoustrack: function() { document.querySelector(".z-btn-previous").click(); },
-                nexttrack: function() { document.querySelector(".z-btn-next").click(); },
+                play: function() { document.querySelector(".actions button.btn-play").click(); },
+                previoustrack: function() { document.querySelector(".actions button.btn-pre").click(); },
+                nexttrack: function() { document.querySelector(".actions button.btn-next").click(); },
                 pause: function() {
                     if (!document.querySelector("audio").paused) {
-                        document.querySelector(".z-btn-play").click();
+                        document.querySelector(".actions button.btn-play").click();
                     }
                 },
             }
